@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUBCONN International | Fluidos</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Michroma&family=Raleway:ital,wght@0,200;0,300;1,200;1,300&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lub-dark': '#0A192F',
+                        'lub-cyan': '#00D4FF',
+                        'lub-gray': '#B0B8C1',
+                        'lub-white': '#FFFFFF',
+                        'lub-darker': '#050D1A',
+                    },
+                    fontFamily: {
+                        'tech': ['Michroma', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'elegant': ['"Raleway"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'tech-gradient': 'linear-gradient(135deg, rgba(10,25,47,1) 0%, rgba(0,212,255,0.1) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Variables y Reseteo */
+        :root {
+            --cyan: #00D4FF;
+            --dark: #0A192F;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* Oculta el cursor por defecto para usar el personalizado */
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-tech {
+            font-family: 'Michroma', sans-serif;
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050D1A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00D4FF;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00a0cc;
+        }
+
+        /* Cursor Personalizado */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+        }
+        .custom-cursor-follower {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+        }
+        .hover-active .custom-cursor {
+            width: 12px;
+            height: 12px;
+            background-color: #fff;
+            box-shadow: 0 0 15px #fff;
+        }
+        .hover-active .custom-cursor-follower {
+            width: 60px;
+            height: 60px;
+            border-color: var(--cyan);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Pantalla de carga (Loader) */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background-color: #050D1A;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+        }
+        .loader-ring {
+            width: 100px;
+            height: 100px;
+            border: 2px solid transparent;
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            position: relative;
+        }
+        .loader-ring::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 2px solid transparent;
+            border-bottom-color: #B0B8C1;
+            border-radius: 50%;
+            animation: spin 2s linear infinite reverse;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Efectos Glow y Botones */
+        .glow-text {
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+        }
+        .btn-glow {
+            position: relative;
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2) inset;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+            transition: all 0.4s ease;
+        }
+        .btn-glow:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6), 0 0 10px rgba(0, 212, 255, 0.4) inset;
+            border-color: #fff;
+        }
+        .btn-glow:hover::before {
+            left: 100%;
+        }
+
+        /* Hero Fluido y Partículas */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .hero-fluid-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0,212,255,0.15) 0%, rgba(10,25,47,0.8) 70%);
+            z-index: 2;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Tarjetas Hover (Pilares) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(176, 184, 193, 0.1);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cyan);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.1), 0 0 15px rgba(0, 212, 255, 0.2) inset;
+        }
+        .glass-card:hover .icon-glow {
+            color: var(--cyan);
+            text-shadow: 0 0 15px var(--cyan);
+            transform: scale(1.1);
+        }
+
+        /* Acordeón de Valores */
+        .value-item {
+            border-bottom: 1px solid rgba(176, 184, 193, 0.2);
+        }
+        .value-header {
+            cursor: none; /* Para usar el custom cursor */
+        }
+        .value-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.1, 1, 0.3, 1), opacity 0.3s;
+            opacity: 0;
+        }
+        .value-item.active .value-content {
+            max-height: 200px;
+            opacity: 1;
+            padding-bottom: 1.5rem;
+        }
+        .value-item.active .value-icon {
+            transform: rotate(90deg);
+            color: var(--cyan);
+        }
+        .value-item.active .value-title {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Conectores Why Us */
+        .tech-line {
+            position: relative;
+        }
+        .tech-line::after {
+            content: '';
+            position: absolute;
+            right: -50%;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        @media (max-width: 1024px) {
+            .tech-line::after { display: none; }
+        }
+
+        /* Efecto Imagen Overlay Fluido */
+        .img-fluid-overlay {
+            position: relative;
+            overflow: hidden;
+        }
+        .img-fluid-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0, 212, 255, 0.2), rgba(10, 25, 47, 0.9));
+            mix-blend-mode: overlay;
+        }
+
+        /* Utilidades GSAP Reveal */
+        .reveal { opacity: 0; visibility: hidden; }
+
+        /* Estilos para integrar el Traductor de Google Nativo al diseño Premium */
+        body { top: 0px !important; position: static !important; } 
+        .goog-te-banner-frame.skiptranslate { display: none !important; } 
+        
+        #google_translate_element {
+            display: flex;
+            align-items: center;
+        }
+        .goog-te-gadget {
+            font-family: 'Inter', sans-serif !important;
+            color: transparent !important;
+            font-size: 0px !important;
+        }
+        .goog-te-gadget img {
+            display: none !important;
+        }
+        .goog-te-combo {
+            background-color: transparent !important;
+            color: var(--cyan) !important;
+            border: none !important;
+            padding: 0px 4px 0px 8px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            outline: none;
+            margin: 0 !important;
+        }
+        .goog-te-combo:hover {
+            color: #ffffff !important;
+        }
+        .goog-te-combo option {
+            background-color: var(--dark);
+            color: #ffffff;
+            padding: 8px;
+        }
+        
+        /* Ocultar texto de Google */
+        .goog-logo-link {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="custom-cursor-follower" id="cursor-follower"></div>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-ring mb-8"></div>
+        <div class="font-tech text-lub-cyan text-2xl tracking-[0.4em] uppercase glow-text">Bienvenido</div>
+    </div>
+
+    <!-- Notificación Premium (Toast) para avisos del sistema -->
+    <div id="system-toast" class="fixed bottom-24 right-8 bg-lub-dark/95 backdrop-blur-md border border-lub-cyan text-white px-6 py-4 rounded-sm shadow-[0_0_20px_rgba(0,212,255,0.2)] transform translate-y-24 opacity-0 transition-all duration-500 z-[9999] flex items-start gap-4 pointer-events-none">
+        <i class="fa-solid fa-triangle-exclamation text-lub-cyan text-xl mt-1 animate-pulse"></i>
+        <div class="pr-4">
+            <h4 class="font-tech text-lub-cyan text-sm font-bold mb-1 tracking-wider uppercase">Alerta de Entorno</h4>
+            <p id="toast-message" class="text-xs text-lub-gray font-light leading-relaxed">Mensaje del sistema.</p>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6 px-8 flex justify-between items-center bg-transparent">
+        
+        <!-- Espacio vacío para mantener el menú alineado a la derecha -->
+        <div></div>
+
+        <div class="hidden md:flex gap-8 font-tech text-sm tracking-widest text-lub-gray items-center">
+            <a href="#about" class="hover:text-lub-cyan transition-colors cursor-hover uppercase">Nosotros</a>
+            <a href="#philosophy" class="hover:text-lub-cyan transition-colors cursor-hover uppercase">Filosofía</a>
+            <a href="#why-us" class="hover:text-lub-cyan transition-colors cursor-hover uppercase">Ventaja</a>
+            <a href="#contacto" class="hover:text-lub-cyan transition-colors cursor-hover uppercase text-white">Contactarnos</a>
+        </div>
+        <div class="flex items-center gap-4">
+            
+            <!-- Selector de Idiomas Nativo (Estilo Píldora Premium) -->
+            <div class="flex items-center gap-1 bg-lub-dark/80 border border-lub-cyan/30 rounded-full pl-4 pr-2 py-1.5 hover:border-lub-cyan transition-colors duration-300 shadow-[0_0_10px_rgba(0,212,255,0.05)] cursor-hover">
+                <i class="fa-solid fa-globe text-lub-cyan text-sm"></i>
+                <div id="google_translate_element"></div>
+            </div>
+            
+            <button id="mobile-btn" class="md:hidden text-lub-cyan text-2xl cursor-hover z-[60]">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Menú Móvil Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-lub-darker/98 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-500 flex flex-col items-center justify-center gap-8 md:hidden">
+        <a href="#about" class="mobile-link text-3xl font-tech text-white hover:text-lub-cyan tracking-widest uppercase transition-colors">Nosotros</a>
+        <a href="#philosophy" class="mobile-link text-3xl font-tech text-white hover:text-lub-cyan tracking-widest uppercase transition-colors">Filosofía</a>
+        <a href="#why-us" class="mobile-link text-3xl font-tech text-white hover:text-lub-cyan tracking-widest uppercase transition-colors">Ventaja</a>
+        <a href="#contacto" class="mobile-link text-3xl font-tech text-white hover:text-lub-cyan tracking-widest uppercase transition-colors">Contactarnos</a>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- BOTÓN FLOTANTE DE WHATSAPP ACTUALIZADO                                    -->
+    <!-- ========================================================================= -->
+    <a href="https://wa.me/50257605478" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_0_25px_rgba(37,211,102,0.8)] transition-all duration-300 cursor-hover">
+        <i class="fa-brands fa-whatsapp"></i>
+        <!-- Animación de pulso -->
+        <span class="absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-40 animate-ping -z-10"></span>
+    </a>
+
+    <!-- 1. HERO SECTION -->
+    <header id="hero" class="relative h-screen flex items-center justify-center overflow-hidden bg-lub-darker">
+        <div id="particles-js"></div>
+        <div class="hero-fluid-overlay"></div>
+        
+        <div class="hero-content text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
+            <!-- Logo Grande Hero -->
+            <div class="reveal reveal-up mb-8 inline-block">
+                <!-- ========================================================= -->
+                <!-- REEMPLAZAR LOGO: Cambia "logo.png" por el nombre de tu imagen -->
+                <!-- ========================================================= -->
+                <img src="logo.png" alt="LUBCONN Logo" class="w-64 md:w-80 lg:w-[28rem] h-auto mx-auto drop-shadow-[0_0_25px_rgba(0,212,255,0.15)] object-contain">
+            </div>
+            
+            <!-- Eslogan Traducido al Español -->
+            <h2 class="reveal reveal-up font-tech text-lub-cyan tracking-[0.2em] text-sm md:text-lg mb-10 glow-text font-bold uppercase">
+                Más allá de la lubricación, hacia la perfección.
+            </h2>
+            
+            <p class="reveal reveal-up text-lub-gray text-lg md:text-xl font-light mb-12 max-w-3xl leading-relaxed">
+                Más que lubricación, ingeniería de perfección. Transformamos la continuidad operativa mediante tecnología avanzada y monitoreo inteligente para la Industria 4.0.
+            </p>
+            
+            <div class="reveal reveal-up">
+                <a href="#about" class="btn-glow font-tech py-4 px-8 rounded-sm tracking-widest uppercase text-sm font-semibold cursor-hover inline-block">
+                    Conocer más
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-70 cursor-hover">
+            <span class="font-tech text-xs text-lub-gray mb-2 tracking-widest">SCROLL</span>
+            <div class="w-[1px] h-12 bg-lub-gray relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1/2 bg-lub-cyan animate-[scrollLine_2s_ease-in-out_infinite]"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. QUIÉNES SOMOS -->
+    <section id="about" class="py-24 relative bg-lub-dark overflow-hidden">
+        <!-- Mapa mundi de fondo sutil -->
+        <div class="absolute inset-0 opacity-5 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-no-repeat bg-center bg-cover pointer-events-none"></div>
+        
+        <div class="container mx-auto px-6 lg:px-12 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <div class="lg:w-1/2 reveal reveal-left">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="h-[1px] w-12 bg-lub-cyan"></div>
+                        <h3 class="font-tech text-lub-cyan tracking-widest uppercase text-sm">Fluidos</h3>
+                    </div>
+                    <h2 class="font-tech text-3xl md:text-5xl font-bold mb-8 leading-tight">
+                        DISEÑAMOS LA <br><span class="text-lub-white">CONTINUIDAD OPERATIVA</span>
+                    </h2>
+                    <p class="text-lub-gray text-lg leading-relaxed mb-6 font-light">
+                        En <span class="text-white font-medium">LUBCONN International</span>, no solo suministramos fluidos industriales, sino que integramos ciencia de materiales avanzada con los principios de la <strong>Industria 4.0</strong>.
+                    </p>
+                    <p class="text-lub-gray text-lg leading-relaxed mb-8 font-light">
+                        Nuestro enfoque trasciende el mantenimiento preventivo, evolucionando hacia un ecosistema predictivo donde cada gota de lubricante es un sensor de rendimiento para la industria global.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-8 border-t border-lub-gray/20 pt-8 mt-8">
+                        <div>
+                            <div class="font-tech text-3xl text-lub-cyan font-bold mb-1">+10</div>
+                            <div class="text-xs text-lub-gray uppercase tracking-wider">Años de Experiencia</div>
+                        </div>
+                        <div>
+                            <div class="font-tech text-3xl text-lub-cyan font-bold mb-1">4.0</div>
+                            <div class="text-xs text-lub-gray uppercase tracking-wider">Integración IoT</div>
+                        </div>
+                        <div>
+                            <div class="font-tech text-3xl text-lub-cyan font-bold mb-1">100%</div>
+                            <div class="text-xs text-lub-gray uppercase tracking-wider">Precisión</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 w-full reveal reveal-right relative">
+                    <!-- Decoración tecnológica -->
+                    <div class="absolute -inset-4 border border-lub-cyan/30 z-0 hidden md:block"></div>
+                    <div class="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-lub-cyan z-20"></div>
+                    <div class="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-lub-cyan z-20"></div>
+                    
+                    <div class="img-fluid-overlay z-10 p-2 bg-lub-dark">
+                        <!-- ========================================================================= -->
+                        <!-- ATENCIÓN: ESTA ES LA IMAGEN INICIAL QUE HAY QUE REEMPLAZAR -->
+                        <!-- Cuando descargues la web, cambia el 'src' de abajo por tu imagen -->
+                        <!-- ========================================================================= -->
+                        <img src="imagen.png" class="w-full h-auto object-cover contrast-110 drop-shadow-[0_0_15px_rgba(0,212,255,0.3)] filter">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. PILARES -->
+    <section id="pillars" class="py-24 bg-tech-gradient relative">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16 reveal reveal-up">
+                <h3 class="font-tech text-lub-cyan tracking-widest uppercase text-sm mb-4">Nuestra Base Estructural</h3>
+                <h2 class="font-tech text-3xl md:text-5xl font-bold">PILARES CORPORATIVOS</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                
+                <!-- Pilar 1 -->
+                <div class="glass-card p-10 reveal cursor-hover">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa-solid fa-network-wired text-4xl text-lub-gray transition-colors duration-300 icon-glow"></i>
+                        <span class="font-tech text-lub-cyan/50 text-2xl font-bold">01</span>
+                    </div>
+                    <h4 class="font-tech text-xl font-bold mb-4 text-white">Innovación Conectada</h4>
+                    <p class="text-lub-gray font-light text-sm leading-relaxed">
+                        Desarrollo de lubricantes con tecnología de sensores embebidos y análisis de datos en tiempo real, permitiendo decisiones operativas basadas en inteligencia artificial.
+                    </p>
+                </div>
+
+                <!-- Pilar 2 -->
+                <div class="glass-card p-10 reveal cursor-hover" style="transition-delay: 100ms;">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa-solid fa-globe text-4xl text-lub-gray transition-colors duration-300 icon-glow"></i>
+                        <span class="font-tech text-lub-cyan/50 text-2xl font-bold">02</span>
+                    </div>
+                    <h4 class="font-tech text-xl font-bold mb-4 text-white">Alcance Global</h4>
+                    <p class="text-lub-gray font-light text-sm leading-relaxed">
+                        Logística internacional estandarizada y red de distribución capaz de abastecer los complejos industriales más remotos y exigentes del planeta con calidad uniforme.
+                    </p>
+                </div>
+
+                <!-- Pilar 3 -->
+                <div class="glass-card p-10 reveal cursor-hover" style="transition-delay: 200ms;">
+                    <div class="mb-6 flex justify-between items-start">
+                        <i class="fa-solid fa-medal text-4xl text-lub-gray transition-colors duration-300 icon-glow"></i>
+                        <span class="font-tech text-lub-cyan/50 text-2xl font-bold">03</span>
+                    </div>
+                    <h4 class="font-tech text-xl font-bold mb-4 text-white">Compromiso con la Excelencia</h4>
+                    <p class="text-lub-gray font-light text-sm leading-relaxed">
+                        Rigurosos estándares de laboratorio y certificaciones internacionales. Cada fórmula diseñada es sometida a pruebas extremas para asegurar tolerancia cero a fallas.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FILOSOFÍA CORPORATIVA -->
+    <section id="philosophy" class="py-24 bg-lub-dark relative border-y border-lub-cyan/10">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="flex flex-col lg:flex-row gap-16">
+                
+                <!-- Misión y Visión -->
+                <div class="lg:w-5/12 reveal reveal-left">
+                    <h2 class="font-tech text-3xl font-bold mb-12">NÚCLEO ESTRATÉGICO</h2>
+                    
+                    <div class="mb-10 relative pl-8 border-l border-lub-gray/30">
+                        <div class="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-lub-cyan shadow-[0_0_10px_#00D4FF]"></div>
+                        <h4 class="font-tech text-xl text-lub-cyan mb-3 flex items-center gap-3">
+                            <i class="fa-solid fa-rocket"></i> Misión
+                        </h4>
+                        <p class="text-lub-gray font-light leading-relaxed text-sm">
+                            Proveer soluciones de lubricación de vanguardia que maximicen la eficiencia, protejan los activos críticos y reduzcan el impacto ambiental, impulsando el progreso de la industria pesada y de precisión a nivel mundial.
+                        </p>
+                    </div>
+
+                    <div class="relative pl-8 border-l border-lub-gray/30">
+                        <div class="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-lub-cyan shadow-[0_0_10px_#00D4FF]"></div>
+                        <h4 class="font-tech text-xl text-lub-cyan mb-3 flex items-center gap-3">
+                            <i class="fa-solid fa-eye"></i> Visión
+                        </h4>
+                        <p class="text-lub-gray font-light leading-relaxed text-sm">
+                            Ser la autoridad global indiscutible en fluidos inteligentes, liderando la transición hacia fábricas autónomas mediante tecnologías de fricción cero y monitoreo predictivo total.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Valores Interactivos -->
+                <div class="lg:w-7/12 reveal reveal-right">
+                    <h2 class="font-tech text-3xl font-bold mb-12 text-white uppercase">Panel de Valores <span class="animate-pulse text-lub-cyan">_</span></h2>
+                    
+                    <div class="bg-lub-darker border border-lub-gray/20 rounded-sm p-6 custom-shadow">
+                        <!-- Acordeon Item 1 -->
+                        <div class="value-item active pb-4 mb-4" onclick="toggleValue(this)">
+                            <div class="value-header flex justify-between items-center cursor-hover group py-2">
+                                <h4 class="font-tech text-lg text-white transition-colors duration-300 value-title">Precisión Tecnológica</h4>
+                                <i class="fa-solid fa-chevron-right text-lub-gray transition-all duration-300 value-icon"></i>
+                            </div>
+                            <div class="value-content">
+                                <p class="text-lub-gray font-light text-sm mt-2">La exactitud molecular en nuestras fórmulas garantiza un rendimiento predecible y superior bajo condiciones extremas de presión y temperatura.</p>
+                            </div>
+                        </div>
+
+                        <!-- Acordeon Item 2 -->
+                        <div class="value-item pb-4 mb-4" onclick="toggleValue(this)">
+                            <div class="value-header flex justify-between items-center cursor-hover group py-2">
+                                <h4 class="font-tech text-lg text-white transition-colors duration-300 value-title group-hover:text-lub-cyan">Innovación Disruptiva</h4>
+                                <i class="fa-solid fa-chevron-right text-lub-gray transition-all duration-300 value-icon"></i>
+                            </div>
+                            <div class="value-content">
+                                <p class="text-lub-gray font-light text-sm mt-2">Desafiamos el status quo de la industria tradicional, integrando nanotecnología y análisis de datos para crear los fluidos del futuro.</p>
+                            </div>
+                        </div>
+
+                        <!-- Acordeon Item 3 -->
+                        <div class="value-item pb-4 mb-4" onclick="toggleValue(this)">
+                            <div class="value-header flex justify-between items-center cursor-hover group py-2">
+                                <h4 class="font-tech text-lg text-white transition-colors duration-300 value-title group-hover:text-lub-cyan">Integridad Industrial</h4>
+                                <i class="fa-solid fa-chevron-right text-lub-gray transition-all duration-300 value-icon"></i>
+                            </div>
+                            <div class="value-content">
+                                <p class="text-lub-gray font-light text-sm mt-2">Nuestros productos cumplen exactamente con lo prometido. Fomentamos la transparencia total en nuestras especificaciones y resultados de laboratorio.</p>
+                            </div>
+                        </div>
+
+                        <!-- Acordeon Item 4 -->
+                        <div class="value-item pb-4 mb-4" onclick="toggleValue(this)">
+                            <div class="value-header flex justify-between items-center cursor-hover group py-2">
+                                <h4 class="font-tech text-lg text-white transition-colors duration-300 value-title group-hover:text-lub-cyan">Compromiso con la Perfección</h4>
+                                <i class="fa-solid fa-chevron-right text-lub-gray transition-all duration-300 value-icon"></i>
+                            </div>
+                            <div class="value-content">
+                                <p class="text-lub-gray font-light text-sm mt-2">La mejora continua está codificada en nuestro ADN. Buscamos erradicar las fallas mecánicas a través de la superioridad de nuestros fluidos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Acordeon Item 5 -->
+                        <div class="value-item" onclick="toggleValue(this)">
+                            <div class="value-header flex justify-between items-center cursor-hover group py-2">
+                                <h4 class="font-tech text-lg text-white transition-colors duration-300 value-title group-hover:text-lub-cyan">Sostenibilidad Operativa</h4>
+                                <i class="fa-solid fa-chevron-right text-lub-gray transition-all duration-300 value-icon"></i>
+                            </div>
+                            <div class="value-content">
+                                <p class="text-lub-gray font-light text-sm mt-2">Diseñamos lubricantes de vida extendida y base biosintética, reduciendo el consumo, los desechos y la huella de carbono de las operaciones de nuestros clientes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. MENSAJE DEL GERENTE -->
+    <section id="ceo" class="py-24 bg-lub-darker relative">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="bg-lub-dark border border-lub-gray/10 p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+                <!-- Acentos visuales -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-lub-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-lub-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none"></div>
+
+                <div class="md:w-1/3 reveal reveal-left z-10">
+                    <div class="relative w-64 h-64 mx-auto md:w-full md:h-auto md:aspect-square overflow-hidden border-b-2 border-r-2 border-lub-cyan pb-2 pr-2">
+                        <!-- Fotografía Ejecutiva (Soberbia y profesional) -->
+                        <img src="nery.jpeg" alt="Nery Castañeda, Gerente General" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-700">
+                    </div>
+                </div>
+
+                <div class="md:w-2/3 reveal reveal-right z-10">
+                    <i class="fa-solid fa-quote-left text-4xl text-lub-cyan/30 mb-6"></i>
+                    <h3 class="font-elegant font-extralight text-3xl md:text-5xl leading-relaxed mb-8 italic text-lub-white/90">
+                        "En <span class="font-tech font-bold text-lub-cyan not-italic text-2xl md:text-4xl">LUBCONN</span>, creemos que la eficiencia no es una meta, sino un estándar constante. Nuestra misión es empoderar la maquinaria del mundo con la inteligencia y protección necesarias para operar sin límites."
+                    </h3>
+                    <div>
+                        <h4 class="font-body text-xl font-bold uppercase tracking-wider text-white">Nery Castañeda</h4>
+                        <p class="text-lub-cyan text-sm uppercase tracking-widest font-body mt-1 font-medium">Gerente General</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. ¿POR QUÉ ELEGIRNOS? -->
+    <section id="why-us" class="py-24 bg-tech-gradient relative">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+            <h2 class="font-tech text-3xl md:text-5xl font-bold mb-20 reveal reveal-up">DISEÑADOS PARA LIDERAR</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-0 max-w-5xl mx-auto relative">
+                <!-- Línea de conexión de fondo para desktop -->
+                <div class="hidden lg:block absolute top-1/2 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-lub-cyan to-transparent opacity-20 transform -translate-y-1/2 z-0"></div>
+
+                <div class="p-8 reveal tech-line z-10 bg-transparent flex flex-col items-center cursor-hover group">
+                    <div class="w-24 h-24 rounded-full bg-lub-darker border border-lub-cyan/30 flex items-center justify-center mb-6 relative group-hover:border-lub-cyan transition-colors duration-500 group-hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+                        <i class="fa-solid fa-microchip text-3xl text-lub-white group-hover:text-lub-cyan transition-colors duration-300"></i>
+                    </div>
+                    <h4 class="font-tech text-lg font-bold mb-3 text-white">Tecnología de Vanguardia</h4>
+                    <p class="text-lub-gray font-light text-sm">Formulaciones sintéticas avanzadas y aditivos exclusivos.</p>
+                </div>
+
+                <div class="p-8 reveal tech-line z-10 bg-transparent flex flex-col items-center cursor-hover group" style="transition-delay: 150ms;">
+                    <div class="w-24 h-24 rounded-full bg-lub-darker border border-lub-cyan/30 flex items-center justify-center mb-6 relative group-hover:border-lub-cyan transition-colors duration-500 group-hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+                        <i class="fa-solid fa-headset text-3xl text-lub-white group-hover:text-lub-cyan transition-colors duration-300"></i>
+                    </div>
+                    <h4 class="font-tech text-lg font-bold mb-3 text-white">Soporte Especializado</h4>
+                    <p class="text-lub-gray font-light text-sm">Ingeniería de campo experta y análisis tribológico predictivo continuo.</p>
+                </div>
+
+                <div class="p-8 reveal z-10 bg-transparent flex flex-col items-center cursor-hover group" style="transition-delay: 300ms;">
+                    <div class="w-24 h-24 rounded-full bg-lub-darker border border-lub-cyan/30 flex items-center justify-center mb-6 relative group-hover:border-lub-cyan transition-colors duration-500 group-hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+                        <i class="fa-solid fa-earth-americas text-3xl text-lub-white group-hover:text-lub-cyan transition-colors duration-300"></i>
+                    </div>
+                    <h4 class="font-tech text-lg font-bold mb-3 text-white">Fiabilidad Internacional</h4>
+                    <p class="text-lub-gray font-light text-sm">Certificaciones globales y cadena de suministro robusta para operaciones sin interrupción.</p>
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN: Beneficios y Llamado a la Acción -->
+            <div class="mt-24 max-w-5xl mx-auto bg-lub-dark border border-lub-cyan/20 p-10 md:p-16 rounded-sm relative overflow-hidden reveal reveal-up text-left custom-shadow">
+                <!-- Acentos visuales -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-lub-cyan rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-40 h-40 bg-lub-cyan rounded-full mix-blend-screen filter blur-[80px] opacity-10 pointer-events-none"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div class="md:w-2/3">
+                        <h3 class="font-tech text-2xl md:text-3xl font-bold mb-4 text-white uppercase">El Impacto Real en su Operación</h3>
+                        <p class="text-lub-gray font-light leading-relaxed mb-6 text-sm md:text-base">
+                            Implementar nuestros Fluidos trasciende el concepto de "gasto de mantenimiento"; es una inversión estratégica. Al asociarse con LUBCONN International, su planta experimentará una transformación medible:
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 text-sm text-lub-gray">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-lub-cyan"></i> Erradicación de paros no programados</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-lub-cyan"></i> Ahorro energético y eficiencia térmica</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-lub-cyan"></i> Extensión máxima de vida útil en maquinaria</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-lub-cyan"></i> Asesoría tribológica experta 24/7</li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/3 text-center md:text-right border-t md:border-t-0 md:border-l border-lub-gray/20 pt-8 md:pt-0 md:pl-8">
+                        <p class="text-lub-cyan font-tech text-sm uppercase tracking-widest mb-4">¿Listo para evolucionar?</p>
+                        <p class="text-lub-gray text-xs font-light mb-6">Permítanos analizar sus requerimientos técnicos y diseñar una solución a medida para sus equipos más críticos.</p>
+                        <button onclick="openContactModal()" class="btn-glow font-tech py-4 px-6 rounded-sm tracking-widest uppercase text-xs font-bold cursor-hover inline-block text-center w-full">
+                            Contactar a un Experto
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal de Contacto Premium (Oculto por defecto) -->
+    <div id="contact-modal" class="fixed inset-0 bg-lub-darker/90 backdrop-blur-md z-[100] flex items-center justify-center opacity-0 invisible transition-all duration-300">
+        <div class="bg-lub-dark border border-lub-cyan/30 p-8 md:p-12 rounded-sm w-11/12 max-w-md relative shadow-[0_0_30px_rgba(0,212,255,0.15)] transform scale-95 transition-transform duration-300" id="contact-modal-content">
+            <!-- Botón Cerrar -->
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-lub-gray hover:text-lub-cyan text-xl cursor-hover transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <h3 class="font-tech text-2xl font-bold mb-2 text-white uppercase text-center">Inicie el Cambio</h3>
+            <p class="text-lub-gray text-xs font-light mb-6 text-center">Complete sus datos y un ingeniero se comunicará a la brevedad.</p>
+            
+            <!-- Formulario de Captura de Leads (Conectado a Google Sheets) -->
+            <form id="expert-form" class="flex flex-col gap-4">
+                <!-- Campo Honeypot Oculto (Seguridad Anti-Spam) -->
+                <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                    <input type="text" name="bot_field" id="bot_field" tabindex="-1" autocomplete="off">
+                </div>
+
+                <input type="text" name="name" placeholder="Nombre completo" required class="bg-lub-darker/50 border border-lub-gray/20 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-lub-cyan transition-colors cursor-hover w-full font-body placeholder-lub-gray/50">
+                
+                <input type="email" name="email" placeholder="Correo corporativo" required class="bg-lub-darker/50 border border-lub-gray/20 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-lub-cyan transition-colors cursor-hover w-full font-body placeholder-lub-gray/50">
+                
+                <input type="text" name="company" placeholder="Empresa" required class="bg-lub-darker/50 border border-lub-gray/20 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-lub-cyan transition-colors cursor-hover w-full font-body placeholder-lub-gray/50">
+                
+                <button type="submit" id="submit-btn" class="btn-glow font-tech py-3 px-6 rounded-sm tracking-widest uppercase text-xs font-bold cursor-hover w-full mt-2 flex justify-center items-center gap-2">
+                    <span id="submit-text">Enviar Solicitud</span>
+                </button>
+                
+                <!-- Mensaje de estado (Éxito o Error) -->
+                <p id="form-status" class="text-xs text-center mt-2 hidden font-tech tracking-wider"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. FOOTER PREMIUM -->
+    <footer id="contacto" class="bg-lub-darker pt-20 pb-10 border-t border-lub-cyan/20 relative overflow-hidden">
+        <!-- Líneas geométricas sutiles de fondo -->
+        <svg class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00D4FF" stroke-width="0.5"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+
+        <div class="container mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                
+                <!-- Brand -->
+                <div class="col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <!-- ========================================================= -->
+                        <!-- REEMPLAZAR LOGO: Cambia "logo.jpg" por el nombre de tu imagen -->
+                        <!-- ========================================================= -->
+                        <img src="logo.png" alt="LUBCONN Logo" class="w-15 h-18 object-contain rounded-sm">
+                        
+                       
+                    </div>
+                    <p class="text-lub-gray text-sm font-light leading-relaxed mb-6">
+                        Más que lubricación, ingeniería de perfección. Soluciones avanzadas para la industria del mañana.
+                    </p>
+                    <!-- Socials -->
+                    <div class="flex gap-4">
+                        <a href="https://www.linkedin.com/in/nery-castaneda?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded bg-lub-dark border border-lub-gray/20 flex items-center justify-center text-lub-white hover:border-lub-cyan hover:text-lub-cyan transition-colors cursor-hover">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/17AWW7RmQo/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded bg-lub-dark border border-lub-gray/20 flex items-center justify-center text-lub-white hover:border-lub-cyan hover:text-lub-cyan transition-colors cursor-hover">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Enlaces -->
+                <div>
+                    <h4 class="font-tech text-white uppercase tracking-wider mb-6 text-sm">Explorar</h4>
+                    <ul class="space-y-3 text-lub-gray font-light text-sm">
+                        <li><a href="#about" class="hover:text-lub-cyan transition-colors cursor-hover flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Tecnología</a></li>
+                        <li><a href="#philosophy" class="hover:text-lub-cyan transition-colors cursor-hover flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Corporativo</a></li>
+                        <li><a href="#" class="hover:text-lub-cyan transition-colors cursor-hover flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Inteligencia 4.0</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto -->
+                <div>
+                    <h4 class="font-tech text-white uppercase tracking-wider mb-6 text-sm">Contacto Global</h4>
+                    <ul class="space-y-4 text-lub-gray font-light text-sm">
+                        <!-- Ko'ápe oĩ pe tenda pyahu -->
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-lub-cyan"></i>
+                            <span>15 Calle 31-64 Zona 7<br>Ciudad De Plata II, Guatemala City, Guatemala, 01007</span>
+                        </li>
+                        <!-- Ko'ápe oĩ pe ñe'ẽveve pyahu -->
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-lub-cyan"></i>
+                            <a href="mailto:marketing@lubconn.com" class="hover:text-white transition-colors cursor-hover">marketing@lubconn.com</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-lub-cyan"></i>
+                            <a href="https://wa.me/50257605478" target="_blank" rel="noopener noreferrer" class="font-tech tracking-wider hover:text-white transition-colors cursor-hover">+502 5760 5478</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-lub-gray/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-lub-gray/60 font-light">
+                <p>&copy; <script>document.write(new Date().getFullYear())</script> LUBCONN International. Todos los derechos reservados.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-white transition-colors cursor-hover">Política de Privacidad</a>
+                    <a href="#" class="hover:text-white transition-colors cursor-hover">Términos Legales</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts (Particles, GSAP, Custom UI Logic) -->
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // 1. Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                    initAnimations(); // Iniciar animaciones después de cargar
+                }, 800);
+            }, 1500); // Tiempo de carga simulado
+        });
+
+        // 2. Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursor-follower');
+        const cursorHoverElements = document.querySelectorAll('a, button, .cursor-hover');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Animación suave para el follower
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        cursorHoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                document.body.classList.add('hover-active');
+            });
+            el.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hover-active');
+            });
+        });
+
+        // 3. Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-lub-dark/95', 'backdrop-blur-md', 'shadow-lg', 'shadow-lub-cyan/5');
+                navbar.classList.remove('bg-transparent', 'py-6');
+                navbar.classList.add('py-4');
+            } else {
+                navbar.classList.remove('bg-lub-dark/95', 'backdrop-blur-md', 'shadow-lg', 'shadow-lub-cyan/5');
+                navbar.classList.add('bg-transparent', 'py-6');
+                navbar.classList.remove('py-4');
+            }
+        });
+
+        // Lógica del Menú Móvil
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                mobileBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+                mobileMenu.classList.remove('translate-x-0');
+                mobileBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        }
+
+        mobileBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // 4. Accordion Logic for Philosophy Values
+        function toggleValue(element) {
+            // Cerrar todos
+            document.querySelectorAll('.value-item').forEach(item => {
+                if(item !== element) {
+                    item.classList.remove('active');
+                }
+            });
+            // Toggle actual
+            element.classList.toggle('active');
+        }
+
+        // 5. Particles.js Configuration (Estilo circuito/fluido tecnológico)
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": { "enable": true, "value_area": 800 }
+                },
+                "color": { "value": "#00D4FF" },
+                "shape": {
+                    "type": "circle",
+                    "stroke": { "width": 0, "color": "#000000" }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00D4FF",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.8 } },
+                    "push": { "particles_nb": 4 }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // 6. GSAP Scroll Animations
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Funciones de revelado general
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            revealElements.forEach((el) => {
+                let yVal = 0, xVal = 0;
+                
+                if(el.classList.contains('reveal-up')) yVal = 50;
+                else if(el.classList.contains('reveal-left')) xVal = -50;
+                else if(el.classList.contains('reveal-right')) xVal = 50;
+                else yVal = 30; // Default up
+
+                gsap.fromTo(el, 
+                    { autoAlpha: 0, y: yVal, x: xVal },
+                    {
+                        duration: 1, 
+                        autoAlpha: 1, 
+                        y: 0, x: 0,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // Parallax effect on Hero
+            gsap.to(".hero-content", {
+                yPercent: 50,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#hero",
+                    start: "top top", 
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        }
+
+        // 7. Lógica del Sistema de Notificaciones (Toast)
+        function showSystemToast(message) {
+            const toast = document.getElementById('system-toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 6000);
+        }
+
+        // 8. Lógica del Modal de Contacto
+        function openContactModal() {
+            const modal = document.getElementById('contact-modal');
+            const content = document.getElementById('contact-modal-content');
+            modal.classList.remove('opacity-0', 'invisible');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contact-modal');
+            const content = document.getElementById('contact-modal-content');
+            modal.classList.add('opacity-0', 'invisible');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+        }
+
+        // Cerrar modal al hacer clic afuera de la caja
+        document.getElementById('contact-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeContactModal();
+        });
+
+        // 9. Lógica del Formulario de Contacto (Hacia Google Sheets)
+        const expertForm = document.getElementById('expert-form');
+        
+        if(expertForm) {
+            expertForm.addEventListener('submit', e => {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submit-btn');
+                const submitText = document.getElementById('submit-text');
+                const statusMsg = document.getElementById('form-status');
+
+                // --- 1. SEGURIDAD: Validación Honeypot (Anti-Bot) ---
+                const honeypot = document.getElementById('bot_field').value;
+                if (honeypot !== "") {
+                    // Si el bot llenó el campo oculto, simulamos éxito para que no intente otro método y abortamos.
+                    console.warn("Conexión bloqueada por seguridad.");
+                    expertForm.reset();
+                    return; 
+                }
+
+                // --- 2. SEGURIDAD: Validación Estricta de Datos ---
+                const nameInput = expertForm.name.value.trim();
+                const emailInput = expertForm.email.value.trim();
+                const companyInput = expertForm.company.value.trim();
+
+                // Bloquear caracteres peligrosos (HTML, Scripts o Fórmulas de Excel)
+                const invalidChars = /[<>{}*$=+]/;
+                if (invalidChars.test(nameInput) || invalidChars.test(companyInput)) {
+                    statusMsg.innerText = '✖ Caracteres inválidos. Solo use texto normal.';
+                    statusMsg.className = 'text-xs text-center mt-2 font-tech tracking-wider text-red-500';
+                    statusMsg.classList.remove('hidden');
+                    return;
+                }
+
+                // Validación estricta de formato de correo
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput)) {
+                    statusMsg.innerText = '✖ Por favor ingrese un correo válido.';
+                    statusMsg.className = 'text-xs text-center mt-2 font-tech tracking-wider text-red-500';
+                    statusMsg.classList.remove('hidden');
+                    return;
+                }
+                
+                // ==============================================================================
+                // URL DE TU SCRIPT DE GOOGLE ACTUALIZADA
+                // ==============================================================================
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbx46269D8NPMXU1YPdI2AOfj54mXcwXTB5Pg9ubT1fK6xwQaOqbtosV9rInLpWH8Spw/exec'; 
+
+                // Cambiar estado a cargando
+                submitBtn.disabled = true;
+                submitText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+                statusMsg.classList.add('hidden');
+
+                if (scriptURL === 'PEGAR_URL_AQUI') {
+                    // Simulación visual si aún no han puesto la URL
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitText.innerText = 'Enviar Solicitud';
+                        statusMsg.innerText = '⚠️ Debes configurar la URL de Google Sheets en el código.';
+                        statusMsg.className = 'text-xs text-center mt-2 font-tech tracking-wider text-yellow-400';
+                        statusMsg.classList.remove('hidden');
+                    }, 1500);
+                    return;
+                }
+
+                // Enviar datos
+                fetch(scriptURL, { method: 'POST', body: new FormData(expertForm)})
+                    .then(response => {
+                        submitBtn.disabled = false;
+                        submitText.innerText = 'Enviar Solicitud';
+                        statusMsg.innerText = '✓ Solicitud enviada exitosamente';
+                        statusMsg.className = 'text-xs text-center mt-2 font-tech tracking-wider text-[#25D366]';
+                        statusMsg.classList.remove('hidden');
+                        expertForm.reset();
+                        
+                        // Ocultar mensaje y cerrar el modal después de 3 segundos
+                        setTimeout(() => {
+                            statusMsg.classList.add('hidden');
+                            closeContactModal();
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        submitBtn.disabled = false;
+                        submitText.innerText = 'Enviar Solicitud';
+                        statusMsg.innerText = '✖ Ocurrió un error. Intente nuevamente.';
+                        statusMsg.className = 'text-xs text-center mt-2 font-tech tracking-wider text-red-500';
+                        statusMsg.classList.remove('hidden');
+                    });
+            });
+        }
+    </script>
+
+    <!-- Script de Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es', 
+                includedLanguages: 'es,en,de,fr,it,pt,zh-CN,ja,ko,ru,ar', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
